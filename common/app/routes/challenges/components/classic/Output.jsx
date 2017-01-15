@@ -3,8 +3,6 @@ import PureComponent from 'react-pure-render/component';
 import NoSSR from 'react-no-ssr';
 import Codemirror from 'react-codemirror';
 
-import CodeMirrorSkeleton from '../skeleton/CodeMirrorSkeleton.jsx';
-
 const defaultOptions = {
   lineNumbers: false,
   mode: 'javascript',
@@ -22,7 +20,7 @@ export default class extends PureComponent {
     const { output } = this.props;
     return (
       <div className='challenge-log'>
-        <NoSSR onSSR={ <CodeMirrorSkeleton content={ output } /> }>
+        <NoSSR>
           <Codemirror
             options={ defaultOptions }
             value={ output }

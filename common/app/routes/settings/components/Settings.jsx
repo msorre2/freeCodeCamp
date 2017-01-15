@@ -1,22 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
-
 import { Button, Row, Col } from 'react-bootstrap';
 import FA from 'react-fontawesome';
 
 import LockedSettings from './Locked-Settings.jsx';
 import SocialSettings from './Social-Settings.jsx';
 import EmailSettings from './Email-Setting.jsx';
-import LanguageSettings from './Language-Settings.jsx';
-import SKWave from '../../../components/SK-Wave.jsx';
+import LangaugeSettings from './Language-Settings.jsx';
 
+import { toggleUserFlag } from '../redux/actions';
+import { toggleNightMode, updateTitle } from '../../../redux/actions';
 
-import { toggleUserFlag } from '../redux/actions.js';
-import { userSelector } from '../../../redux/selectors.js';
-import { toggleNightMode, updateTitle } from '../../../redux/actions.js';
-
-const mapDispatchToProps = {
+const actions = {
   updateTitle,
   toggleNightMode,
   toggleIsLocked: () => toggleUserFlag('isLocked'),
@@ -25,26 +20,22 @@ const mapDispatchToProps = {
   toggleMonthlyEmail: () => toggleUserFlag('sendMonthlyEmail')
 };
 
-const mapStateToProps = createSelector(
-  userSelector,
-  state => state.app.isSignInAttempted,
-  (
-    {
-      user: {
-        username,
-        email,
-        isLocked,
-        isGithubCool,
-        isTwitter,
-        isLinkedIn,
-        sendMonthlyEmail,
-        sendNotificationEmail,
-        sendQuincyEmail
-      }
-    },
-    isSignInAttempted
-  ) => ({
-    showLoading: isSignInAttempted,
+const mapStateToProps = state => {
+  const {
+    app: { user: username },
+    entities: { user: userMap }
+  } = state;
+  const {
+    email,
+    isLocked,
+    isGithubCool,
+    isTwitter,
+    isLinkedIn,
+    sendMonthlyEmail,
+    sendNotificationEmail,
+    sendQuincyEmail
+  } = userMap[username] || {};
+  return {
     username,
     email,
     isLocked,
@@ -54,29 +45,7 @@ const mapStateToProps = createSelector(
     sendMonthlyEmail,
     sendNotificationEmail,
     sendQuincyEmail
-  })
-);
-const propTypes = {
-  children: PropTypes.element,
-  username: PropTypes.string,
-  isLocked: PropTypes.bool,
-  isGithubCool: PropTypes.bool,
-  isTwitter: PropTypes.bool,
-  isLinkedIn: PropTypes.bool,
-  showLoading: PropTypes.bool,
-  email: PropTypes.string,
-  sendMonthlyEmail: PropTypes.bool,
-  sendNotificationEmail: PropTypes.bool,
-  sendQuincyEmail: PropTypes.bool,
-  updateTitle: PropTypes.func.isRequired,
-  toggleNightMode: PropTypes.func.isRequired,
-  toggleIsLocked: PropTypes.func.isRequired,
-  toggleQuincyEmail: PropTypes.func.isRequired,
-  toggleMonthlyEmail: PropTypes.func.isRequired,
-  toggleNotificationEmail: PropTypes.func.isRequired,
-  lang: PropTypes.string,
-  initialLang: PropTypes.string,
-  updateMyLang: PropTypes.func
+  };
 };
 
 export class Settings extends React.Component {
@@ -84,6 +53,28 @@ export class Settings extends React.Component {
     super(...props);
     this.updateMyLang = this.updateMyLang.bind(this);
   }
+  static displayName = 'Settings';
+  static propTypes = {
+    children: PropTypes.element,
+    username: PropTypes.string,
+    isLocked: PropTypes.bool,
+    isGithubCool: PropTypes.bool,
+    isTwitter: PropTypes.bool,
+    isLinkedIn: PropTypes.bool,
+    email: PropTypes.string,
+    sendMonthlyEmail: PropTypes.bool,
+    sendNotificationEmail: PropTypes.bool,
+    sendQuincyEmail: PropTypes.bool,
+    updateTitle: PropTypes.func.isRequired,
+    toggleNightMode: PropTypes.func.isRequired,
+    toggleIsLocked: PropTypes.func.isRequired,
+    toggleQuincyEmail: PropTypes.func.isRequired,
+    toggleMonthlyEmail: PropTypes.func.isRequired,
+    toggleNotificationEmail: PropTypes.func.isRequired,
+    lang: PropTypes.string,
+    initialLang: PropTypes.string,
+    updateMyLang: PropTypes.func
+  };
 
   updateMyLang(e) {
     e.preventDefault();
@@ -103,7 +94,6 @@ export class Settings extends React.Component {
       isGithubCool,
       isTwitter,
       isLinkedIn,
-      showLoading,
       email,
       sendMonthlyEmail,
       sendNotificationEmail,
@@ -114,9 +104,6 @@ export class Settings extends React.Component {
       toggleMonthlyEmail,
       toggleNotificationEmail
     } = this.props;
-    if (!username && !showLoading) {
-      return <SKWave />;
-    }
     if (children) {
       return (
         <Row>
@@ -249,7 +236,7 @@ export class Settings extends React.Component {
             smOffset={ 2 }
             xs={ 12 }
             >
-            <LanguageSettings />
+            <LangaugeSettings />
           </Col>
         </Row>
         <div className='spacer' />
@@ -271,15 +258,6 @@ export class Settings extends React.Component {
               >
               Delete my Free Code Camp account
             </Button>
-            <Button
-              block={ true }
-              bsSize='lg'
-              bsStyle='danger'
-              className='btn-link-social'
-              href='/reset-my-progress'
-              >
-              Reset all of my progress and brownie points
-            </Button>
           </Col>
         </Row>
       </div>
@@ -287,10 +265,4 @@ export class Settings extends React.Component {
   }
 }
 
-Settings.displayName = 'Settings';
-Settings.propTypes = propTypes;
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Settings);
+export default connect(mapStateToProps, actions)(Settings);

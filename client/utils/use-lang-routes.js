@@ -23,9 +23,9 @@ function getLangFromLocation(location) {
   return getLangFromPath(location.pathname);
 }
 
-export default function useLangRoutes(createHistory, primaryLang) {
+export default function useLangRoutes(createHistory) {
   return (options = {}) => {
-    let lang = primaryLang || 'en';
+    let lang = 'en';
     const history = createHistory(options);
     const unsubscribeFromHistory = history.listen(nextLocation => {
       lang = getLangFromLocation(nextLocation);

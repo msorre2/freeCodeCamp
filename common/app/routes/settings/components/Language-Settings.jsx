@@ -7,12 +7,6 @@ import { updateMyLang } from '../redux/actions';
 import { userSelector } from '../../../redux/selectors';
 import langs from '../../../../utils/supported-languages';
 
-const propTypes = {
-  fields: PropTypes.object,
-  handleSubmit: PropTypes.func.isRequired,
-  updateMyLang: PropTypes.func.isRequired
-};
-
 const mapStateToProps = createSelector(
   userSelector,
   ({ user: { languageTag } }) => ({
@@ -20,7 +14,7 @@ const mapStateToProps = createSelector(
     initialValues: languageTag ? { lang: languageTag } : null
   })
 );
-const mapDispatchToProps = { updateMyLang };
+const actions = { updateMyLang };
 const fields = [ 'lang' ];
 const validator = values => {
   if (!langs[values.lang]) {
@@ -34,7 +28,7 @@ const options = [(
       key='default'
       value='not-the-momma'
       >
-      Preferred Language
+      Prefered Langauge
     </option>
   ),
   ...Object.keys(langs).map(tag => {
@@ -56,7 +50,12 @@ const options = [(
   )
 ];
 
-export class LanguageSettings extends React.Component {
+export class LangaugeSettings extends React.Component {
+  static propTypes = {
+    fields: PropTypes.object,
+    handleSubmit: PropTypes.func.isRequired,
+    updateMyLang: PropTypes.func.isRequired
+  };
   constructor(...props) {
     super(...props);
     this.handleChange = this.handleChange.bind(this);
@@ -81,17 +80,16 @@ export class LanguageSettings extends React.Component {
 
   render() {
     const {
-      fields: { lang: { name, value } }
+      fields: { lang }
     } = this.props;
     return (
       <FormGroup>
         <FormControl
           className='btn btn-block btn-primary btn-link-social btn-lg'
           componentClass='select'
-          name={ name }
+          { ...lang }
           onChange={ this.handleChange }
           style={{ height: '45px' }}
-          value={ value }
           >
           { options }
         </FormControl>
@@ -99,8 +97,6 @@ export class LanguageSettings extends React.Component {
     );
   }
 }
-
-LanguageSettings.propTypes = propTypes;
 
 export default reduxForm(
   {
@@ -110,5 +106,5 @@ export default reduxForm(
     overwriteOnInitialValuesChange: false
   },
   mapStateToProps,
-  mapDispatchToProps
-)(LanguageSettings);
+  actions
+)(LangaugeSettings);

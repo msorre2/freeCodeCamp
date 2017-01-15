@@ -1,6 +1,5 @@
 import { Observable } from 'rx';
 import debug from 'debug';
-
 import { challengeSelector } from './selectors';
 import types from './types';
 import {
@@ -11,8 +10,7 @@ import {
 } from './actions';
 import {
   createMapUi,
-  filterComingSoonBetaFromEntities,
-  searchableChallengeTitles
+  filterComingSoonBetaFromEntities
 } from '../utils';
 import {
   delayedRedirect,
@@ -70,18 +68,12 @@ export default function fetchChallengesSaga(action$, getState, { services }) {
             entities,
             isDev
           );
-          const searchNames = searchableChallengeTitles(filteredEntities);
           return Observable.of(
             fetchChallengesCompleted(
               createNameIdMap(filteredEntities),
               result
             ),
-            initMap(
-              createMapUi(
-                filteredEntities,
-                result,
-                searchNames
-              )),
+            initMap(createMapUi(filteredEntities, result)),
           );
         })
         .catch(createErrorObservable);

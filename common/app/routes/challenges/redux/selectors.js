@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
-
 import * as challengeTypes from '../../../utils/challengeTypes';
 import { getNode } from '../utils';
-import blockNameify from '../../../utils/blockNameify';
 
 const viewTypes = {
   [ challengeTypes.html]: 'classic',
@@ -44,13 +42,8 @@ export const challengeSelector = createSelector(
     }
     const challenge = challengeMap[challengeName];
     const challengeType = challenge && challenge.challengeType;
-    const blockName = blockNameify(challenge.block);
-    const title = blockName && challenge.title ?
-                  `${blockName}: ${challenge.title}` :
-                  challenge.title;
     return {
       challenge,
-      title,
       viewType: viewTypes[challengeType] || 'classic',
       submitType: submitTypes[challengeType] || 'tests',
       showPreview: challengeType === challengeTypes.html,

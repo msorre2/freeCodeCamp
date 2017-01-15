@@ -25,21 +25,17 @@ export class BugModal extends PureComponent {
     } = this.props;
     return (
       <Modal
+        onHide={ closeBugModal }
         show={ isOpen }
         >
         <Modal.Header className='challenge-list-header'>
           Did you find a bug?
-          <span
-            className='close closing-x'
-            onClick={ closeBugModal }
-            >
-            ×
-          </span>
+          <span className='close closing-x'>×</span>
         </Modal.Header>
         <Modal.Body className='text-center'>
           <h3>
             Before you submit a new issue,
-            read "How to Report a Bug" and
+            read "Help I've Found a Bug" and
             browse other issues with this challenge.
           </h3>
           <Button
@@ -49,7 +45,7 @@ export class BugModal extends PureComponent {
             href={ bugLink }
             target='_blank'
             >
-            Read "How to Report a Bug"
+            Read "Help I've Found a Bug"
           </Button>
           <Button
             block={ true }
@@ -71,7 +67,6 @@ export class BugModal extends PureComponent {
             block={ true }
             bsSize='lg'
             bsStyle='primary'
-            onClick={ closeBugModal }
             >
             Cancel
           </Button>

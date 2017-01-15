@@ -15,40 +15,40 @@ import {
   simpleProject,
   frontEndProject
 } from '../../../../utils/challengeTypes';
+import { toggleHelpChat } from '../../../../redux/actions';
 
-const propTypes = {
-  isSignedIn: PropTypes.bool,
-  isSimple: PropTypes.bool,
-  isFrontEnd: PropTypes.bool,
-  isSubmitting: PropTypes.bool,
-  helpChatRoom: PropTypes.string.isRequired,
-  openBugModal: PropTypes.func.isRequired,
-  submitChallenge: PropTypes.func.isRequired
-};
-const mapDispatchToProps = {
+const bindableActions = {
   submitChallenge,
+  toggleHelpChat,
   openBugModal
 };
 const mapStateToProps = createSelector(
   challengeSelector,
   state => state.app.isSignedIn,
   state => state.challengesApp.isSubmitting,
-  state => state.challengesApp.helpChatRoom,
   (
     { challenge: { challengeType = simpleProject } },
     isSignedIn,
-    isSubmitting,
-    helpChatRoom,
+    isSubmitting
   ) => ({
     isSignedIn,
     isSubmitting,
-    helpChatRoom,
     isSimple: challengeType === simpleProject,
     isFrontEnd: challengeType === frontEndProject
   })
 );
 
 export class ToolPanel extends PureComponent {
+  static propTypes = {
+    isSignedIn: PropTypes.bool,
+    isSimple: PropTypes.bool,
+    isFrontEnd: PropTypes.bool,
+    isSubmitting: PropTypes.bool,
+    toggleHelpChat: PropTypes.func.isRequired,
+    openBugModal: PropTypes.func.isRequired,
+    submitChallenge: PropTypes.func.isRequired
+  };
+
   renderSubmitButton(isSignedIn, submitChallenge) {
     const buttonCopy = isSignedIn ?
       'Submit and go to my next challenge' :
@@ -71,8 +71,8 @@ export class ToolPanel extends PureComponent {
       isSimple,
       isSignedIn,
       isSubmitting,
-      helpChatRoom,
       submitChallenge,
+      toggleHelpChat,
       openBugModal
     } = this.props;
 
@@ -89,9 +89,8 @@ export class ToolPanel extends PureComponent {
           <Button
             bsStyle='primary'
             className='btn-primary-ghost btn-big'
-            componentClass='a'
-            href={ `https://gitter.im/freecodecamp/${helpChatRoom}` }
-            target='_blank'
+            componentClass='div'
+            onClick={ toggleHelpChat }
             >
             Help
           </Button>
@@ -109,10 +108,7 @@ export class ToolPanel extends PureComponent {
   }
 }
 
-ToolPanel.propTypes = propTypes;
-ToolPanel.displayName = 'ToolPanel';
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  bindableActions
 )(ToolPanel);

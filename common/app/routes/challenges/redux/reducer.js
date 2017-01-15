@@ -42,10 +42,7 @@ const initialUiState = {
   isPressed: false,
   isCorrect: false,
   shouldShakeQuestion: false,
-  shouldShowQuestions: false,
-  isChallengeModalOpen: false,
-  successMessage: 'Happy Coding!',
-  unlockedSteps: []
+  shouldShowQuestions: false
 };
 const initialState = {
   isCodeLocked: false,
@@ -84,19 +81,7 @@ const mainReducer = handleActions(
     }),
     [types.updateTests]: (state, { payload: tests }) => ({
       ...state,
-      tests,
-      isChallengeModalOpen: (
-        tests.length > 0 &&
-        tests.every(test => test.pass && !test.err)
-      )
-    }),
-    [types.closeChallengeModal]: state => ({
-      ...state,
-      isChallengeModalOpen: false
-    }),
-    [types.updateSuccessMessage]: (state, { payload }) => ({
-      ...state,
-      successMessage: payload
+      tests
     }),
     [types.updateHint]: state => ({
       ...state,
@@ -144,19 +129,16 @@ const mainReducer = handleActions(
     }),
 
     // step
-    [types.goToStep]: (state, { payload: { step = 0, isUnlocked }}) => ({
+    [types.goToStep]: (state, { payload: step = 0 }) => ({
       ...state,
       currentIndex: step,
       previousIndex: state.currentIndex,
-      isActionCompleted: isUnlocked
+      isActionCompleted: false
     }),
+
     [types.completeAction]: state => ({
       ...state,
       isActionCompleted: true
-    }),
-    [types.updateUnlockedSteps]: (state, { payload }) => ({
-      ...state,
-      unlockedSteps: payload
     }),
     [types.openLightBoxImage]: state => ({
       ...state,
@@ -239,29 +221,9 @@ const filesReducer = handleActions(
           return files;
         }, { ...state });
     },
-    [types.savedCodeFound]: (state, { payload: { files, challenge } }) => {
-      if (challenge.type === 'mod') {
-        // this may need to change to update head/tail
-        return challenge.files;
-      }
-      if (
-        challenge.challengeType !== html &&
-        challenge.challengeType !== js &&
-        challenge.challengeType !== bonfire
-      ) {
-        return {};
-      }
-      // classic challenge to modern format
-      const preFile = getPreFile(challenge);
-      return {
-        [preFile.key]: createPoly({
-          ...files[preFile.key],
-          // make sure head/tail are always fresh
-          head: arrayToString(challenge.head),
-          tail: arrayToString(challenge.tail)
-        })
-      };
-    },
+    [types.savedCodeFound]: (state, { payload: files }) => ({
+      ...files
+    }),
     [types.updateCurrentChallenge]: (state, { payload: challenge = {} }) => {
       if (challenge.type === 'mod') {
         return challenge.files;
@@ -276,6 +238,7 @@ const filesReducer = handleActions(
       // classic challenge to modern format
       const preFile = getPreFile(challenge);
       return {
+        ...state,
         [preFile.key]: createPoly({
           ...preFile,
           contents: buildSeed(challenge),

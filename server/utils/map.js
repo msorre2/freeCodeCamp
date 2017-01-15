@@ -111,18 +111,13 @@ export function mapChallengeToLang(
     lang = 'en';
   }
   const translation = translations[lang] || {};
-  const isTranslated = Object.keys(translation).length > 0;
   if (lang !== 'en') {
     challenge = {
       ...challenge,
-      ...translation,
-      isTranslated
+      ...translation
     };
   }
-  return {
-    ...challenge,
-    isTranslated
-  };
+  return challenge;
 }
 
 export function getMapForLang(lang) {
@@ -138,3 +133,4 @@ export function getMapForLang(lang) {
     return { result, entities };
   };
 }
+

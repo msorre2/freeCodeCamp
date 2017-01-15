@@ -70,12 +70,12 @@
     },
     "head": {
       "type": "array",
-      "description": "Appended to user code",
+      "description": "appended to user code",
       "default": []
     },
     "tail": {
       "type": "array",
-      "description": "Prepended to user code",
+      "description": "prepended to user code",
       "default": []
     },
     "helpRoom": {
@@ -85,7 +85,7 @@
     },
     "fileName": {
       "type": "string",
-      "description": "Filename challenge comes from. Used in dev mode"
+      "description": "filename challenge comes from. Used in dev mode"
     },
     "challengeSeed": {
       "type": "array"

@@ -36,7 +36,7 @@ export default function settingsController(app) {
         message: `${lang} is currently unsupported`
       });
     }
-    if (user.languageTag === lang) {
+    if (user.langaugeTag === lang) {
       return res.json({
         message: `Your language is already set to ${langName}`
       });
