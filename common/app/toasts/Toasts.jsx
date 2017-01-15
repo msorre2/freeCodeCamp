@@ -42,9 +42,7 @@ const addDispatchableActionsToToast = createSelector(
       finalBarStyle = rightBarStyle;
     }
     const onClick = !registeredActions[actionCreator] ?
-      () => {
-        dispatch(removeToast(toast));
-      } :
+      null :
       () => {
         dispatch(registeredActions[actionCreator]());
         dispatch(removeToast(toast));

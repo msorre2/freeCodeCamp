@@ -41,7 +41,6 @@ export class Header extends PureComponent {
 
   handleKeyDown(e) {
     if (e.keyCode === ESC) {
-      e.preventDefault();
       this.props.clearFilter();
     }
   }
@@ -97,7 +96,7 @@ export class Header extends PureComponent {
           <Row className='map-buttons'>
             <InputGroup>
               <FormControl
-                autoComplete='off'
+                autocompleted='off'
                 className={ inputClass }
                 onChange={ updateFilter }
                 onKeyDown={ this.handleKeyDown }

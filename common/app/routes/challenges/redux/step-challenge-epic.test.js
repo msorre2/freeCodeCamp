@@ -32,12 +32,7 @@ test(file, function(t) {
   });
   t.test('steps back', t => {
     const actions = Observable.of({ type: types.stepBackward });
-    const state = {
-      challengesApp: {
-        currentIndex: 1,
-        unlockedSteps: [ true, undefined ] // eslint-disable-line no-undefined
-      }
-    };
+    const state = { challengesApp: { currentIndex: 1 } };
     const onNextSpy = sinon.spy();
     challengeSelectorStub.challengeSelector = sinon.spy(_state => {
       t.assert(_state === state, 'challenge selector not called with state');
@@ -61,7 +56,7 @@ test(file, function(t) {
           t.assert(
             onNextSpy.calledWithMatch({
               type: types.goToStep,
-              payload: { step: 0, isUnlocked: true }
+              payload: 0
             }),
             'Epic did not return the expected action'
           );
@@ -72,12 +67,7 @@ test(file, function(t) {
   });
   t.test('steps forward', t => {
     const actions = Observable.of({ type: types.stepForward });
-    const state = {
-      challengesApp: {
-        currentIndex: 0,
-        unlockedSteps: []
-      }
-    };
+    const state = { challengesApp: { currentIndex: 0 } };
     const onNextSpy = sinon.spy();
     challengeSelectorStub.challengeSelector = sinon.spy(_state => {
       t.assert(_state === state, 'challenge selector not called with state');
@@ -101,7 +91,7 @@ test(file, function(t) {
           t.assert(
             onNextSpy.calledWithMatch({
               type: types.goToStep,
-              payload: { step: 1, isUnlocked: false }
+              payload: 1
             }),
             'Epic did not return the expected action'
           );

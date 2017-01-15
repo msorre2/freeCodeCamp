@@ -75,7 +75,7 @@ module.exports = function(app) {
       type: 'email',
       to: user.email,
       from: 'Team@freecodecamp.com',
-      subject: 'Welcome to freeCodeCamp!',
+      subject: 'Welcome to Free Code Camp!',
       protocol: isDev ? null : 'https',
       host: isDev ? 'localhost' : 'freecodecamp.com',
       port: isDev ? null : 443,

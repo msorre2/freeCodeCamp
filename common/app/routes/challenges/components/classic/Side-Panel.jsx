@@ -16,11 +16,13 @@ import {
   unlockUntrustedCode
 } from '../../redux/actions';
 import { makeToast } from '../../../../toasts/redux/actions';
+import { toggleHelpChat } from '../../../../redux/actions';
 
-const mapDispatchToProps = {
+const bindableActions = {
   makeToast,
   executeChallenge,
   updateHint,
+  toggleHelpChat,
   openBugModal,
   unlockUntrustedCode
 };
@@ -32,22 +34,14 @@ const mapStateToProps = createSelector(
   state => state.challengesApp.output,
   state => state.challengesApp.hintIndex,
   state => state.challengesApp.isCodeLocked,
-  state => state.challengesApp.helpChatRoom,
   (
-    {
-      challenge: {
-        description,
-        hints = []
-      } = {},
-      title
-    },
+    { challenge: { title, description, hints = [] } = {} },
     windowHeight,
     navHeight,
     tests,
     output,
     hintIndex,
-    isCodeLocked,
-    helpChatRoom
+    isCodeLocked
   ) => ({
     title,
     description,
@@ -55,8 +49,7 @@ const mapStateToProps = createSelector(
     tests,
     output,
     hint: hints[hintIndex],
-    isCodeLocked,
-    helpChatRoom
+    isCodeLocked
   })
 );
 
@@ -70,18 +63,17 @@ export class SidePanel extends PureComponent {
   static propTypes = {
     description: PropTypes.arrayOf(PropTypes.string),
     height: PropTypes.number,
-    helpChatRoom: PropTypes.string,
-    hint: PropTypes.string,
-    isCodeLocked: PropTypes.bool,
-    output: PropTypes.string,
     tests: PropTypes.arrayOf(PropTypes.object),
     title: PropTypes.string,
-
-    executeChallenge: PropTypes.func,
-    openBugModal: PropTypes.func,
+    output: PropTypes.string,
+    hint: PropTypes.string,
+    updateHint: PropTypes.func,
     makeToast: PropTypes.func,
+    toggleHelpChat: PropTypes.func,
+    openBugModal: PropTypes.func,
     unlockUntrustedCode: PropTypes.func,
-    updateHint: PropTypes.func
+    isCodeLocked: PropTypes.bool,
+    executeChallenge: PropTypes.func
   };
 
   renderDescription(description = [ 'Happy Coding!' ], descriptionRegex) {
@@ -121,7 +113,7 @@ export class SidePanel extends PureComponent {
       executeChallenge,
       updateHint,
       makeToast,
-      helpChatRoom,
+      toggleHelpChat,
       openBugModal,
       isCodeLocked,
       unlockUntrustedCode
@@ -152,11 +144,11 @@ export class SidePanel extends PureComponent {
         </div>
         <ToolPanel
           executeChallenge={ executeChallenge }
-          helpChatRoom={ helpChatRoom }
           hint={ hint }
           isCodeLocked={ isCodeLocked }
           makeToast={ makeToast }
           openBugModal={ openBugModal }
+          toggleHelpChat={ toggleHelpChat }
           unlockUntrustedCode={ unlockUntrustedCode }
           updateHint={ updateHint }
         />
@@ -170,5 +162,5 @@ export class SidePanel extends PureComponent {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  bindableActions
 )(SidePanel);

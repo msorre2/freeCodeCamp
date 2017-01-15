@@ -14,9 +14,6 @@ import {
   updateMain,
   lockUntrustedCode
 } from '../../common/app/routes/challenges/redux/actions';
-import {
-  challengeSelector
-} from '../../common/app/routes/challenges/redux/selectors';
 
 const legacyPrefixes = [
   'Bonfire: ',
@@ -75,14 +72,13 @@ export function saveCodeSaga(actions, getState) {
     });
 }
 
-export function loadCodeSaga(actions, getState, { window, location }) {
-  return actions
+export function loadCodeSaga(actions$, getState, { window, location }) {
+  return actions$
     ::ofType(types.loadCode)
     .flatMap(() => {
       let finalFiles;
       const state = getState();
       const { user } = userSelector(state);
-      const { challenge } = challengeSelector(state);
       const {
         challengesApp: {
           id = '',
@@ -103,7 +99,7 @@ export function loadCodeSaga(actions, getState, { window, location }) {
           makeToast({
             message: 'I found code in the URI. Loading now.'
           }),
-          savedCodeFound(finalFiles, challenge)
+          savedCodeFound(finalFiles)
         );
       }
 
@@ -122,7 +118,7 @@ export function loadCodeSaga(actions, getState, { window, location }) {
           makeToast({
             message: 'I found some saved work. Loading now.'
           }),
-          savedCodeFound(finalFiles, challenge),
+          savedCodeFound(finalFiles),
           updateMain()
         );
       }
@@ -139,7 +135,7 @@ export function loadCodeSaga(actions, getState, { window, location }) {
             makeToast({
               message: 'I found a previous solved solution. Loading now.'
             }),
-            savedCodeFound(finalFiles, challenge),
+            savedCodeFound(finalFiles),
             updateMain()
           );
         }

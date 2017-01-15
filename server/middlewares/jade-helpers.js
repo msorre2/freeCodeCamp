@@ -1,4 +1,7 @@
 import manifest from '../rev-manifest';
+/* eslint-disable import/default */
+import config from '../../webpack.config';
+/* eslint-enable import/default */
 
 let chunkManifest;
 try {
@@ -27,9 +30,16 @@ function removeOldTerms(str = '') {
   return str.replace(challengesRegex, '');
 }
 
+function getBundleLocation() {
+  return __DEV__ ?
+    config.output.publicPath + '/bundle.js' :
+    rev('/js', 'bundle.js');
+}
+
 export default function jadeHelpers() {
   return function jadeHelpersMiddleware(req, res, next) {
     res.locals.removeOldTerms = removeOldTerms;
+    res.locals.getBundleLocation = getBundleLocation;
     res.locals.rev = rev;
     // static data
     res.locals.user = req.user;

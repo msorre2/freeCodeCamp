@@ -23,7 +23,7 @@ module.exports = {
       'bundle-[name].js' :
       'bundle-[name]-[chunkhash].js',
     path: path.join(__dirname, '/public/js'),
-    publicPath: '/js'
+    publicPath: __DEV__ ? 'http://localhost:2999/js' : '/js'
   },
   module: {
     loaders: [
@@ -33,7 +33,9 @@ module.exports = {
           path.join(__dirname, 'client/'),
           path.join(__dirname, 'common/')
         ],
-        loaders: __DEV__ ? ['react-hot', 'babel'] : [ 'babel' ]
+        loaders: [
+          'babel-loader'
+        ]
       },
       {
         test: /\.json$/,
@@ -57,7 +59,7 @@ module.exports = {
     // Use browser version of visionmedia-debug
     new webpack.NormalModuleReplacementPlugin(
       /debug\/node/,
-      'debug/src/browser'
+      'debug/browser'
     ),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(true)

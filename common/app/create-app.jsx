@@ -46,7 +46,7 @@ export default function createApp({
 }) {
   const sagaOptions = {
     ...sideSagaOptions,
-    services: servicesCreator(serviceOptions)
+    services: servicesCreator(null, serviceOptions)
   };
 
   const sagaMiddleware = createEpic(

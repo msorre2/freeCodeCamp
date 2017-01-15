@@ -93,7 +93,7 @@ module.exports = function(app) {
 
   function showTestimonials(req, res) {
     res.render('resources/stories', {
-      title: 'Testimonials from Happy freeCodeCamp Students ' +
+      title: 'Testimonials from Happy Free Code Camp Students ' +
         'who got Software Engineer Jobs',
       stories: testimonials.slice(0, 72),
       moreStories: true
@@ -102,7 +102,7 @@ module.exports = function(app) {
 
   function showAllTestimonials(req, res) {
     res.render('resources/stories', {
-      title: 'Testimonials from Happy freeCodeCamp Students ' +
+      title: 'Testimonials from Happy Free Code Camp Students ' +
         'who got Software Engineer Jobs',
       stories: testimonials,
       moreStories: false
@@ -111,7 +111,7 @@ module.exports = function(app) {
 
   function showShop(req, res) {
     res.render('resources/shop', {
-      title: 'Support freeCodeCamp by Buying t-shirts, ' +
+      title: 'Support Free Code Camp by Buying t-shirts, ' +
         'stickers, and other goodies'
     });
   }
@@ -171,26 +171,26 @@ module.exports = function(app) {
 
   function unsubscribeAll(req, res, next) {
     req.checkParams('email', 'Must send a valid email').isEmail();
-    var query = { email: req.params.email };
-    var params = {
-      sendQuincyEmail: false,
-      sendMonthlyEmail: false,
-      sendNotificationEmail: false
-    };
-    return User.updateAll(query, params, function(err, info) {
+    return User.findOne({ where: { email: req.params.email } }, (err, user) => {
       if (err) { return next(err); }
-      if (info.count === 0) {
+      if (!user) {
         req.flash('info', {
           msg: 'Email address not found. ' +
           'Please update your Email preferences from your profile.'
         });
         return res.redirect('/map');
-      } else {
+      }
+      return user.updateAttributes({
+        sendQuincyEmail: false,
+        sendMonthlyEmail: false,
+        sendNotificationEmail: false
+      }, (err) => {
+        if (err) { return next(err); }
         req.flash('info', {
           msg: 'We\'ve successfully updated your Email preferences.'
         });
         return res.redirect('/unsubscribed');
-      }
+      });
     });
   }
 
